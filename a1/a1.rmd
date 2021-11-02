@@ -1,0 +1,93 @@
+---
+title: "Assignment B-1: Making a function"
+author: Jiahao Li (50462670)
+output: github_document
+---
+
+## Exercise 1 & 2: Make a Function with Documents (25 + 20 points)
+```{r, error=TRUE}
+#' k-th largest element of a vector
+#' 
+#' This function returns the k-th largest element in a vector with two parameters, nums and k on a 1-index basis. 
+#' If k is smaller than 1, this function will show a warning message and set k to 1 automatically. 
+#' Also if k is larger than the length of the vector, this function will show a warning message, 
+#' and set k to the length of the vector automatically.
+#' 
+#' @param nums, a numeric vector where we would like to find elements. This function is trying to find a target in a group of numbers so this parameter is named as nums.
+#' @param k, a numeric value that specifies the k-th largest element in the vector. This function is trying to find the k-th largest element in a vector so this parameter is named as k.
+#' @return a numeric value which is the k-th largest element in the vector
+
+
+
+kth_largest_element <- function(nums, k) {
+  if (!is.numeric(nums)) {
+    stop("Error: object for 'nums' must be numeric. You have input an object of class: ", class(nums)[1])
+  }
+  if (!is.numeric(k)) {
+    stop("Error: object for 'k' must be numeric. You have input an object of class: ", class(nums)[2])
+  }
+  len <- length(nums)
+  if (len == 0) {
+    stop("Error: 'nums' is empty. Cannot find any target in an empty vector")
+  }
+  if (k < 1) {
+    warning("'k' is smaller than 1, setting k = 1")
+    k <- 1
+  }
+  if (k > len) {
+    warning("'k' is larger than length of nums, ", len, ", setting k = ", len)
+    k <- len
+  }
+  return (sort(nums,partial=len-k+1)[len-k+1])
+}
+```
+
+## Exercise 3: Include examples (15 points)
+```{r, error=TRUE}
+# example vector with elements from 0 to 9
+nums <- c(5, 4, 8, 7, 3, 6, 9, 1, 2, 0)
+
+# k = 1, should get the largest element in this vector, which is 9
+kth_largest_element(nums, 1)
+
+# k = -1, the input makes no sense, but the function will still get the largest element in this vector, 9
+kth_largest_element(nums, -1)
+
+# k = 100, if k is larger than the length of the vector, it will get the smallest element in this vector, which is 0
+kth_largest_element(nums, 100)
+
+# k = 3, which is a normal case, it will simply get the third largest element in this vector
+kth_largest_element(nums, 3)
+```
+
+## Exercise 4: Test the Function (25 points)
+```{r, error=TRUE}
+suppressMessages(library(testthat))
+```
+
+### Test 1: Vector with no NA's
+```{r, error=TRUE}
+# For a normal numeric vector, it will return the k-th largest element
+normal_vector = c(5, 4, 8, 7, 3, 6, 9, 1, 2, 0)
+test_that("Test 1", {
+  expect_equal(7, kth_largest_element(normal_vector, 3))
+})
+```
+
+### Test 2: Vector of a different type
+```{r, error=TRUE}
+# For a character vector, it will throw an error message
+char_vector = c('a', 'b', 'c', 'd', 'e')
+test_that("Test 2", {
+  expect_error(kth_largest_element(char_vector, 4))
+})
+```
+
+### Test 3: Vector of length 0
+```{r, error=TRUE}
+# For an empty vector, it will throw an error message
+zero_vector = c()
+test_that("Test 2", {
+  expect_error(kth_largest_element(zero_vector, 4))
+})
+```
